@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  has_many :microposts, dependent: :destroy
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save   :downcase_email
   before_create :create_activation_digest
@@ -18,6 +19,10 @@ class User < ActiveRecord::Base
 
   def User.new_token
     SecureRandom.urlsafe_base64
+  end
+
+  def feed
+    Micropost.where("user_id = ?", id)
   end
 
   def remember
